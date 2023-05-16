@@ -1,4 +1,5 @@
 from grafo import Grafo, Vertice;
+from rede_knn import distancia_euclidiana;
 
 def predecessores_para_caminho(predecessores, destino):
     caminho = [destino];
@@ -89,3 +90,39 @@ def dijkstra(grafo: Grafo, origem: Vertice, destino: Vertice):
             if nova_distancia < distancias[conectado]:
                 distancias[conectado] = nova_distancia;
                 predecessores[conectado] = vertice_atual;
+
+def heuristica(origem: Vertice, destino: Vertice):
+    return distancia_euclidiana(origem.dado, destino.dado);
+
+def a_estrela(grafo: Grafo, origem: Vertice, destino: Vertice):
+    distancias_reais = {};
+    distancias_estimadas = {};
+    predecessores = {};
+    fila = [origem];
+
+    for vertice in grafo.vertices:
+        distancias_reais[vertice] = float('inf');
+        distancias_estimadas[vertice] = float('inf');
+        predecessores[vertice] = -1;
+
+    distancias_reais[origem] = 0;
+    distancias_estimadas[origem] = heuristica(origem, destino);
+
+    while fila:
+        vertice_atual = min(fila, key=lambda v: distancias_estimadas[v]);
+
+        if (vertice_atual == destino):
+            return predecessores_para_caminho(predecessores, destino);
+
+        fila.remove(vertice_atual);
+
+        conectados = grafo.vertices_conectados(vertice_atual);
+        for conectado in conectados:
+            nova_distancia = distancias_reais[vertice_atual] + grafo.peso(vertice_atual, conectado);
+            if nova_distancia < distancias_reais[conectado]:
+                distancias_reais[conectado] = nova_distancia;
+                distancias_estimadas[conectado] = nova_distancia + heuristica(conectado, destino);
+                predecessores[conectado] = vertice_atual;
+
+                if conectado not in fila:
+                    fila.append(conectado);
