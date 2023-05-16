@@ -18,7 +18,7 @@ camera_y = 0;
 def init(size: tuple[int, int], title: str) -> None:
     pygame.init();
     global screen;
-    screen = pygame.display.set_mode(size);
+    screen = pygame.display.set_mode(size, pygame.RESIZABLE);
     global font;
     font = pygame.font.SysFont(None, 24);
     pygame.display.set_caption(title);
@@ -80,6 +80,7 @@ def loop(grafo: Grafo, caminho = None) -> None:
         
         desenha_vertices(screen, grafo.vertices);
         pygame.display.flip();
+
 
 def quit() -> None:
     pygame.quit();

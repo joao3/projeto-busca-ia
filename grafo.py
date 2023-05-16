@@ -30,7 +30,7 @@ class Grafo:
 
     def __init__(self) -> None:
         self.vertices: list[Vertice] = [];
-        self.arestas: dict[Vertice, list[Vertice]] = {};
+        self.arestas: dict[Vertice, list[Aresta]] = {};
 
     def adiciona_vertice(self, vertice: Vertice) -> None:
         if vertice not in self.vertices:
@@ -48,6 +48,11 @@ class Grafo:
         for aresta in arestas:
             vertices.append(aresta.destino);
         return vertices;
+
+    def peso(self, origem: Vertice, destino: Vertice) -> float:
+        for aresta in self.arestas[origem]:
+            if aresta.destino == destino:
+                return aresta.peso;
 
     def __str__(self) -> str:
         string = '';
