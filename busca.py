@@ -1,5 +1,6 @@
 from grafo import Grafo, Vertice;
 from rede_knn import distancia_euclidiana;
+from time import time;
 
 def predecessores_para_caminho(grafo, predecessores, destino):
     # Reconstrói o caminho percorrido através do dicionário de predecessores.
@@ -20,9 +21,11 @@ def predecessores_para_caminho(grafo, predecessores, destino):
     return caminho, distancia;
 
 def bfs(grafo: Grafo, origem: Vertice, destino: Vertice):
+    t0 = time();
+
     # Se a origem é igual o destino, já achou.
     if origem == destino:
-        return [origem];
+        return [origem], 0, time() - t0;
 
     # Lista de vértices visitados e fila de vértices para visitar, começam com a origem.
     vertices_para_visitar = [origem];
@@ -48,16 +51,18 @@ def bfs(grafo: Grafo, origem: Vertice, destino: Vertice):
             
             # Se o vértice conectado for igual ao destino, achou o caminho.
             if conectado == destino:
-                caminho = predecessores_para_caminho(grafo, predecessores, destino);
-                return caminho;
+                caminho, distancia = predecessores_para_caminho(grafo, predecessores, destino);
+                return caminho, distancia, time() - t0;
 
     # Não existe caminho.
     return None;
 
 def dfs(grafo: Grafo, origem: Vertice, destino: Vertice):
+    t0 = time();
+
     # Se a origem é igual o destino, já achou.
     if origem == destino:
-        return [origem];
+        return [origem], 0, time() - t0;
 
     # Lista de vértices visitados e pilha de vértices para visitar, começam com a origem.
     vertices_para_visitar = [origem];
@@ -83,13 +88,15 @@ def dfs(grafo: Grafo, origem: Vertice, destino: Vertice):
         
             # Se o vértice conectado for igual ao destino, achou o caminho.
             if conectado == destino:
-                caminho = predecessores_para_caminho(grafo, predecessores, destino);
-                return caminho;
+                caminho, distancia = predecessores_para_caminho(grafo, predecessores, destino);
+                return caminho, distancia, time() - t0;
 
     # Não existe caminho.
     return None;
 
 def dijkstra(grafo: Grafo, origem: Vertice, destino: Vertice):
+    t0 = time();
+
     # distancias[v] = distância da origem até o vértice v. 
     distancias = {};
 
@@ -112,7 +119,8 @@ def dijkstra(grafo: Grafo, origem: Vertice, destino: Vertice):
 
         # Achou o caminho.
         if (vertice_atual == destino):
-            return predecessores_para_caminho(grafo, predecessores, destino);
+            caminho, distancia = predecessores_para_caminho(grafo, predecessores, destino);
+            return caminho, distancia, time() - t0;
 
         # Remove vértice atual da fila.
         fila.remove(vertice_atual);
@@ -134,6 +142,8 @@ def heuristica(origem: Vertice, destino: Vertice):
     return distancia_euclidiana(origem.dado, destino.dado);
 
 def a_estrela(grafo: Grafo, origem: Vertice, destino: Vertice):
+    t0 = time();
+
     # distancias_reais[v] = distância da origem até o vértice v. 
     distancias_reais = {};
     # distancias_estimadas[v] = distancia da origem até o vértice v + estimativa (heurística) de v até o destino.
@@ -157,7 +167,8 @@ def a_estrela(grafo: Grafo, origem: Vertice, destino: Vertice):
 
         # Achou o caminho.
         if (vertice_atual == destino):
-            return predecessores_para_caminho(grafo, predecessores, destino);
+            caminho, distancia = predecessores_para_caminho(grafo, predecessores, destino);
+            return caminho, distancia, time() - t0;
 
         fila.remove(vertice_atual);
 
@@ -179,6 +190,8 @@ def a_estrela(grafo: Grafo, origem: Vertice, destino: Vertice):
     return None;
 
 def best_first(grafo: Grafo, origem: Vertice, destino: Vertice):
+    t0 = time();
+
     # estimativas[v] = heurística do vértice v até o destino. 
     estimativas = {};
 
@@ -201,7 +214,8 @@ def best_first(grafo: Grafo, origem: Vertice, destino: Vertice):
 
         # Achou o caminho.
         if (vertice_atual == destino):
-            return predecessores_para_caminho(grafo, predecessores, destino);
+            caminho, distancia = predecessores_para_caminho(grafo, predecessores, destino);
+            return caminho, distancia, time() - t0;
 
         # Remove vértice atual da fila.
         fila.remove(vertice_atual);
