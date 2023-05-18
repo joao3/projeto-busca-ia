@@ -87,7 +87,7 @@ def dfs(grafo: Grafo, origem: Vertice, destino: Vertice):
     return None;
 
 def dijkstra(grafo: Grafo, origem: Vertice, destino: Vertice):
-    # distancias[v] = distãncia da origem até o vértice v. 
+    # distancias[v] = distância da origem até o vértice v. 
     distancias = {};
 
     predecessores = {};
@@ -131,7 +131,7 @@ def heuristica(origem: Vertice, destino: Vertice):
     return distancia_euclidiana(origem.dado, destino.dado);
 
 def a_estrela(grafo: Grafo, origem: Vertice, destino: Vertice):
-    # distancias_reais[v] = distãncia da origem até o vértice v. 
+    # distancias_reais[v] = distância da origem até o vértice v. 
     distancias_reais = {};
     # distancias_estimadas[v] = distancia da origem até o vértice v + estimativa (heurística) de v até o destino.
     distancias_estimadas = {};
@@ -173,4 +173,44 @@ def a_estrela(grafo: Grafo, origem: Vertice, destino: Vertice):
                     fila.append(conectado);
     
     # Não existe caminho.
+    return None;
+
+def best_first(grafo: Grafo, origem: Vertice, destino: Vertice):
+    # estimativas[v] = heurística do vértice v até o destino. 
+    estimativas = {};
+
+    predecessores = {};
+    fila = [];
+    visitados = [origem];
+
+    # Inicia todas as estimativas como infinitas, seta predecessores e adiciona os vértices na fila.
+    for vertice in grafo.vertices:
+        estimativas[vertice] = float('inf');
+        predecessores[vertice] = -1;
+
+    # Heurística da origem até o destino.
+    estimativas[origem] = heuristica(origem, destino);
+
+    # Enquanto houver vértices na fila.
+    while fila:
+        # Pega o vértice com menor estimativa.
+        vertice_atual = min(fila, key=lambda v: estimativas[v]);
+
+        # Achou o caminho.
+        if (vertice_atual == destino):
+            return predecessores_para_caminho(predecessores, destino);
+
+        # Remove vértice atual da fila.
+        fila.remove(vertice_atual);
+
+        # Para todos os vértices conectados com o vértice atual.
+        conectados = grafo.vertices_conectados(vertice_atual);
+        for conectado in conectados:
+            # Se ainda não foi visitado, adiciona na fila, marca como visitado e calcula sua estimativa.
+            if conectado not in visitados:
+                estimativas[conectado] = heuristica(conectado, destino);
+                predecessores[conectado] = vertice_atual;
+                visitados.append(conectado);
+
+    # Nâo caminho.
     return None;
