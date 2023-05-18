@@ -1,20 +1,23 @@
 from grafo import Grafo, Vertice;
 from rede_knn import distancia_euclidiana;
 
-def predecessores_para_caminho(predecessores, destino):
+def predecessores_para_caminho(grafo, predecessores, destino):
     # Reconstrói o caminho percorrido através do dicionário de predecessores.
-    
     caminho = [destino];
     predecessor = predecessores[destino];
+
+    distancia = grafo.peso(predecessor, destino);
 
     # Enquanto houver vértice predecessor, adiciona ele na lista de caminho.
     while predecessor != -1:
         caminho.append(predecessor);
+        if predecessores[predecessor] != -1:
+            distancia += grafo.peso(predecessor, predecessores[predecessor]);
         predecessor = predecessores[predecessor];
     
     # Reverte a lista (começamos a montar de trás pra frente).
     caminho.reverse();
-    return caminho;
+    return caminho, distancia;
 
 def bfs(grafo: Grafo, origem: Vertice, destino: Vertice):
     # Se a origem é igual o destino, já achou.
@@ -45,7 +48,7 @@ def bfs(grafo: Grafo, origem: Vertice, destino: Vertice):
             
             # Se o vértice conectado for igual ao destino, achou o caminho.
             if conectado == destino:
-                caminho = predecessores_para_caminho(predecessores, destino);
+                caminho = predecessores_para_caminho(grafo, predecessores, destino);
                 return caminho;
 
     # Não existe caminho.
@@ -80,7 +83,7 @@ def dfs(grafo: Grafo, origem: Vertice, destino: Vertice):
         
             # Se o vértice conectado for igual ao destino, achou o caminho.
             if conectado == destino:
-                caminho = predecessores_para_caminho(predecessores, destino);
+                caminho = predecessores_para_caminho(grafo, predecessores, destino);
                 return caminho;
 
     # Não existe caminho.
@@ -109,7 +112,7 @@ def dijkstra(grafo: Grafo, origem: Vertice, destino: Vertice):
 
         # Achou o caminho.
         if (vertice_atual == destino):
-            return predecessores_para_caminho(predecessores, destino);
+            return predecessores_para_caminho(grafo, predecessores, destino);
 
         # Remove vértice atual da fila.
         fila.remove(vertice_atual);
@@ -154,7 +157,7 @@ def a_estrela(grafo: Grafo, origem: Vertice, destino: Vertice):
 
         # Achou o caminho.
         if (vertice_atual == destino):
-            return predecessores_para_caminho(predecessores, destino);
+            return predecessores_para_caminho(grafo, predecessores, destino);
 
         fila.remove(vertice_atual);
 
@@ -180,7 +183,7 @@ def best_first(grafo: Grafo, origem: Vertice, destino: Vertice):
     estimativas = {};
 
     predecessores = {};
-    fila = [];
+    fila = [origem];
     visitados = [origem];
 
     # Inicia todas as estimativas como infinitas, seta predecessores e adiciona os vértices na fila.
@@ -198,7 +201,7 @@ def best_first(grafo: Grafo, origem: Vertice, destino: Vertice):
 
         # Achou o caminho.
         if (vertice_atual == destino):
-            return predecessores_para_caminho(predecessores, destino);
+            return predecessores_para_caminho(grafo, predecessores, destino);
 
         # Remove vértice atual da fila.
         fila.remove(vertice_atual);
@@ -208,6 +211,7 @@ def best_first(grafo: Grafo, origem: Vertice, destino: Vertice):
         for conectado in conectados:
             # Se ainda não foi visitado, adiciona na fila, marca como visitado e calcula sua estimativa.
             if conectado not in visitados:
+                fila.append(conectado);
                 estimativas[conectado] = heuristica(conectado, destino);
                 predecessores[conectado] = vertice_atual;
                 visitados.append(conectado);

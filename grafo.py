@@ -86,6 +86,6 @@ class Grafo:
         for origem, arestas in self.arestas.items():
             for aresta in arestas:
                 string += self.vertices.index(origem).__str__()  + ': ' + origem.__str__() + ' -> ';
-                string += self.vertices.index(aresta.destino).__str__() + ': ' + aresta.destino.__str__() + '\n';
+                string += self.vertices.index(aresta.destino).__str__() + ': ' + aresta.destino.__str__() + ' Peso: ' + f'{aresta.peso:.2f}' + '\n';
 
         return string;

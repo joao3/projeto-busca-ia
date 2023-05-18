@@ -4,12 +4,10 @@ from busca import bfs, dfs, dijkstra, a_estrela, best_first;
 import time;
 
 def main() -> None:
-    grafo = grafo_knn(2000, 3);
-    a = time.time()
-    resultado = best_first(grafo, grafo.vertices[0], grafo.vertices[36]);
-    print(time.time() - a)
+    grafo = grafo_knn(10, 7);
+    caminho, distancia = best_first(grafo, grafo.vertices[0], grafo.vertices[3]);
     visualizacao.init((800, 640), "Reden kNN");
-    visualizacao.loop(grafo, resultado);
+    visualizacao.loop(grafo, caminho);
     visualizacao.quit();
 
 
