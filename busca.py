@@ -87,41 +87,59 @@ def dfs(grafo: Grafo, origem: Vertice, destino: Vertice):
     return None;
 
 def dijkstra(grafo: Grafo, origem: Vertice, destino: Vertice):
+    # distancias[v] = distãncia da origem até o vértice v. 
     distancias = {};
+
     predecessores = {};
     fila = [];
 
+    # Inicia todas as distâncias como infinitas, seta predecessores e adiciona os vértices na fila.
     for vertice in grafo.vertices:
         distancias[vertice] = float('inf');
         predecessores[vertice] = -1;
         fila.append(vertice);
 
+    # Distancia da origem até ela mesma é zero.
     distancias[origem] = 0;
 
+    # Enquanto houver vértices na fila.
     while fila:
+        # Pega o vértice com menor distância.
         vertice_atual = min(fila, key=lambda v: distancias[v]);
 
+        # Achou o caminho.
         if (vertice_atual == destino):
             return predecessores_para_caminho(predecessores, destino);
 
+        # Remove vértice atual da fila.
         fila.remove(vertice_atual);
 
+        # Para todos os vértices conectados com o vértice atual.
         conectados = grafo.vertices_conectados(vertice_atual);
         for conectado in conectados:
+            # A nova distânicia é a distância da origem até o nó atual + distância do nó atual até o conectado.
             nova_distancia = distancias[vertice_atual] + grafo.peso(vertice_atual, conectado);
+            # Se a nova distância for menor, atualiza os valores.
             if nova_distancia < distancias[conectado]:
                 distancias[conectado] = nova_distancia;
                 predecessores[conectado] = vertice_atual;
+
+    # Nâo existe caminho.
+    return None;
 
 def heuristica(origem: Vertice, destino: Vertice):
     return distancia_euclidiana(origem.dado, destino.dado);
 
 def a_estrela(grafo: Grafo, origem: Vertice, destino: Vertice):
+    # distancias_reais[v] = distãncia da origem até o vértice v. 
     distancias_reais = {};
+    # distancias_estimadas[v] = distancia da origem até o vértice v + estimativa (heurística) de v até o destino.
     distancias_estimadas = {};
+
     predecessores = {};
     fila = [origem];
 
+    # Inicia todas as distâncias como infinitas e seta predecessores.
     for vertice in grafo.vertices:
         distancias_reais[vertice] = float('inf');
         distancias_estimadas[vertice] = float('inf');
@@ -131,16 +149,21 @@ def a_estrela(grafo: Grafo, origem: Vertice, destino: Vertice):
     distancias_estimadas[origem] = heuristica(origem, destino);
 
     while fila:
+        # Pega o vértice mais promissor (segundo a heurística).
         vertice_atual = min(fila, key=lambda v: distancias_estimadas[v]);
 
+        # Achou o caminho.
         if (vertice_atual == destino):
             return predecessores_para_caminho(predecessores, destino);
 
         fila.remove(vertice_atual);
 
+        # Para todos os vértices conectados com o vértice atual.
         conectados = grafo.vertices_conectados(vertice_atual);
         for conectado in conectados:
+            # A nova distânicia é a distância da origem até o nó atual + distância do nó atual até o conectado.
             nova_distancia = distancias_reais[vertice_atual] + grafo.peso(vertice_atual, conectado);
+            # Se a nova distância for menor, atualiza os valores.
             if nova_distancia < distancias_reais[conectado]:
                 distancias_reais[conectado] = nova_distancia;
                 distancias_estimadas[conectado] = nova_distancia + heuristica(conectado, destino);
@@ -148,3 +171,6 @@ def a_estrela(grafo: Grafo, origem: Vertice, destino: Vertice):
 
                 if conectado not in fila:
                     fila.append(conectado);
+    
+    # Não existe caminho.
+    return None;

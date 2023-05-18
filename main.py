@@ -6,7 +6,7 @@ import time;
 def main() -> None:
     grafo = grafo_knn(100, 4);
     a = time.time()
-    resultado = dfs(grafo, grafo.vertices[0], grafo.vertices[36]);
+    resultado = dijkstra(grafo, grafo.vertices[0], grafo.vertices[36]);
     print(time.time() - a)
     visualizacao.init((800, 640), "Reden kNN");
     visualizacao.loop(grafo, resultado);
