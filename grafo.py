@@ -70,6 +70,7 @@ class Grafo:
         for aresta in self.arestas[origem]:
             if aresta.destino == destino:
                 return aresta.peso;
+        return None;
 
     # To string, utilizado para imprimir as informações do grafo.
     def __str__(self) -> str:
