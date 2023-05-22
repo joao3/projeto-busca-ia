@@ -39,7 +39,6 @@ def gera_arestas(vertices: list[Vertice], k: int) -> list[tuple[Vertice, Vertice
         for distancia in menores_distancias:
             arestas.append((vertice_a, distancia[0], distancia[1]));
             arestas.append((distancia[0], vertice_a, distancia[1]));
-            
 
     return arestas;
 

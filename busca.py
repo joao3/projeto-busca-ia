@@ -28,7 +28,7 @@ def bfs(grafo: Grafo, origem: Vertice, destino: Vertice):
         return [origem], 0, time() - t0;
 
     # Lista de vértices visitados e fila de vértices para visitar, começam com a origem.
-    vertices_para_visitar = [origem];
+    vertices_para_expandir = [origem];
     visitados = [origem];
     
     # Predecessor da origem não existe (usado como critério de parada na função de construção do caminho).
@@ -36,9 +36,9 @@ def bfs(grafo: Grafo, origem: Vertice, destino: Vertice):
     predecessores[origem] = -1;
         
     # Enquanto houver vértices para visitar.
-    while vertices_para_visitar:
+    while vertices_para_expandir:
         # Pega o primeiro vértice da fila e os vértices conectados a ele.
-        vertice_atual = vertices_para_visitar.pop(0);
+        vertice_atual = vertices_para_expandir.pop(0);
         conectados = grafo.vertices_conectados(vertice_atual);
 
         for conectado in conectados:
@@ -47,7 +47,7 @@ def bfs(grafo: Grafo, origem: Vertice, destino: Vertice):
             if conectado not in visitados:
                 predecessores[conectado] = vertice_atual;
                 visitados.append(conectado);
-                vertices_para_visitar.append(conectado);
+                vertices_para_expandir.append(conectado);
             
             # Se o vértice conectado for igual ao destino, achou o caminho.
             if conectado == destino:
@@ -65,7 +65,7 @@ def dfs(grafo: Grafo, origem: Vertice, destino: Vertice):
         return [origem], 0, time() - t0;
 
     # Lista de vértices visitados e pilha de vértices para visitar, começam com a origem.
-    vertices_para_visitar = [origem];
+    vertices_para_expandir = [origem];
     visitados = [origem];
     
     # Predecessor da origem não existe (usado como critério de parada na função de construção do caminho).
@@ -73,9 +73,9 @@ def dfs(grafo: Grafo, origem: Vertice, destino: Vertice):
     predecessores[origem] = -1;
         
     # Enquanto houver vértices para visitar.
-    while vertices_para_visitar:
+    while vertices_para_expandir:
         # Pega o primeiro vértice no topo da pilha e os vértices conectados a ele.
-        vertice_atual = vertices_para_visitar.pop();
+        vertice_atual = vertices_para_expandir.pop();
         conectados = grafo.vertices_conectados(vertice_atual);
 
         for conectado in conectados:
@@ -84,7 +84,7 @@ def dfs(grafo: Grafo, origem: Vertice, destino: Vertice):
             if conectado not in visitados:
                 predecessores[conectado] = vertice_atual;
                 visitados.append(conectado);
-                vertices_para_visitar.append(conectado);
+                vertices_para_expandir.append(conectado);
         
             # Se o vértice conectado for igual ao destino, achou o caminho.
             if conectado == destino:
@@ -101,29 +101,29 @@ def dijkstra(grafo: Grafo, origem: Vertice, destino: Vertice):
     distancias = {};
 
     predecessores = {};
-    fila = [];
+    vertices_para_expandir = [];
 
-    # Inicia todas as distâncias como infinitas, seta predecessores e adiciona os vértices na fila.
+    # Inicia todas as distâncias como infinitas, seta predecessores e adiciona os vértices na lista vertices_para_expandir.
     for vertice in grafo.vertices:
         distancias[vertice] = float('inf');
         predecessores[vertice] = -1;
-        fila.append(vertice);
+        vertices_para_expandir.append(vertice);
 
     # Distancia da origem até ela mesma é zero.
     distancias[origem] = 0;
 
-    # Enquanto houver vértices na fila.
-    while fila:
+    # Enquanto houver vértices na lista vertices_para_expandir.
+    while vertices_para_expandir:
         # Pega o vértice com menor distância.
-        vertice_atual = min(fila, key=lambda v: distancias[v]);
+        vertice_atual = min(vertices_para_expandir, key=lambda v: distancias[v]);
 
         # Achou o caminho.
         if (vertice_atual == destino):
             caminho, distancia = predecessores_para_caminho(grafo, predecessores, destino);
             return caminho, distancia, time() - t0;
 
-        # Remove vértice atual da fila.
-        fila.remove(vertice_atual);
+        # Remove vértice atual da lista vertices_para_expandir.
+        vertices_para_expandir.remove(vertice_atual);
 
         # Para todos os vértices conectados com o vértice atual.
         conectados = grafo.vertices_conectados(vertice_atual);
@@ -150,7 +150,7 @@ def a_estrela(grafo: Grafo, origem: Vertice, destino: Vertice):
     distancias_estimadas = {};
 
     predecessores = {};
-    fila = [origem];
+    vertices_para_expandir = [origem];
 
     # Inicia todas as distâncias como infinitas e seta predecessores.
     for vertice in grafo.vertices:
@@ -161,16 +161,16 @@ def a_estrela(grafo: Grafo, origem: Vertice, destino: Vertice):
     distancias_reais[origem] = 0;
     distancias_estimadas[origem] = heuristica(origem, destino);
 
-    while fila:
+    while vertices_para_expandir:
         # Pega o vértice mais promissor (segundo a heurística).
-        vertice_atual = min(fila, key=lambda v: distancias_estimadas[v]);
+        vertice_atual = min(vertices_para_expandir, key=lambda v: distancias_estimadas[v]);
 
         # Achou o caminho.
         if (vertice_atual == destino):
             caminho, distancia = predecessores_para_caminho(grafo, predecessores, destino);
             return caminho, distancia, time() - t0;
 
-        fila.remove(vertice_atual);
+        vertices_para_expandir.remove(vertice_atual);
 
         # Para todos os vértices conectados com o vértice atual.
         conectados = grafo.vertices_conectados(vertice_atual);
@@ -183,8 +183,8 @@ def a_estrela(grafo: Grafo, origem: Vertice, destino: Vertice):
                 distancias_estimadas[conectado] = nova_distancia + heuristica(conectado, destino);
                 predecessores[conectado] = vertice_atual;
 
-                if conectado not in fila:
-                    fila.append(conectado);
+                if conectado not in vertices_para_expandir:
+                    vertices_para_expandir.append(conectado);
     
     # Não existe caminho.
     return None;
@@ -196,10 +196,10 @@ def best_first(grafo: Grafo, origem: Vertice, destino: Vertice):
     estimativas = {};
 
     predecessores = {};
-    fila = [origem];
+    vertices_para_expandir = [origem];
     visitados = [origem];
 
-    # Inicia todas as estimativas como infinitas, seta predecessores e adiciona os vértices na fila.
+    # Inicia todas as estimativas como infinitas, seta predecessores e adiciona os vértices na vertices_para_expandir.
     for vertice in grafo.vertices:
         estimativas[vertice] = float('inf');
         predecessores[vertice] = -1;
@@ -207,25 +207,25 @@ def best_first(grafo: Grafo, origem: Vertice, destino: Vertice):
     # Heurística da origem até o destino.
     estimativas[origem] = heuristica(origem, destino);
 
-    # Enquanto houver vértices na fila.
-    while fila:
+    # Enquanto houver vértices na vertices_para_expandir.
+    while vertices_para_expandir:
         # Pega o vértice com menor estimativa.
-        vertice_atual = min(fila, key=lambda v: estimativas[v]);
+        vertice_atual = min(vertices_para_expandir, key=lambda v: estimativas[v]);
 
         # Achou o caminho.
         if (vertice_atual == destino):
             caminho, distancia = predecessores_para_caminho(grafo, predecessores, destino);
             return caminho, distancia, time() - t0;
 
-        # Remove vértice atual da fila.
-        fila.remove(vertice_atual);
+        # Remove vértice atual da vertices_para_expandir.
+        vertices_para_expandir.remove(vertice_atual);
 
         # Para todos os vértices conectados com o vértice atual.
         conectados = grafo.vertices_conectados(vertice_atual);
         for conectado in conectados:
-            # Se ainda não foi visitado, adiciona na fila, marca como visitado e calcula sua estimativa.
+            # Se ainda não foi visitado, adiciona na vertices_para_expandir, marca como visitado e calcula sua estimativa.
             if conectado not in visitados:
-                fila.append(conectado);
+                vertices_para_expandir.append(conectado);
                 estimativas[conectado] = heuristica(conectado, destino);
                 predecessores[conectado] = vertice_atual;
                 visitados.append(conectado);

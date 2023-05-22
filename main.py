@@ -4,7 +4,7 @@ from busca import bfs, dfs, dijkstra, a_estrela, best_first;
 from random import randint, seed;
 
 def main() -> None:
-    media(2000, 3);
+    comparacao(2000, 3);
 
 def media(n, k):
     grafo = grafo_knn(n, k);
@@ -59,6 +59,10 @@ def comparacao(n, k):
     
     for algoritmo, resultado in resultados.items():
         imprimir_resultado(grafo, algoritmo, resultado);
+
+    visualizacao.init((640, 480), "knn");
+    visualizacao.loop(grafo, resultados['Algoritmo de Dijkstra'][0]);
+    visualizacao.quit()
 
 def gera_origem_destino(grafo, n):
     indice_origem = randint(0, n);
