@@ -4,11 +4,26 @@ from busca import bfs, dfs, dijkstra, a_estrela, best_first;
 from random import randint, seed;
 
 def main() -> None:
-    comparacao(2000, 3);
+    print('-' * 100);
+    print('n = 100 k = 4');
+    comparacao(100, 4);
+
+    print('-' * 100);
+    print('n = 2000 k = 3');
+    media(2000, 3);
+
+    print('-' * 100);
+    print('n = 2000 k = 7');
+    media(2000, 7);
+
+    print('-' * 100);
+    print('n = 2000 k = 11');
+    media(2000, 11);
 
 def media(n, k):
     grafo = grafo_knn(n, k);
 
+    # Medias dos resultados.
     medias = {
         'Busca em profundidade': [0, 0, 0],
         'Busca em largura': [0, 0, 0],
@@ -17,9 +32,10 @@ def media(n, k):
         'Algoritmo de Dijkstra': [0, 0, 0]
     };
 
+    # Gera n pares de pontos e realiza as buscas, calculando a média dos parâmetros dos resultados da busca.
     n_pontos = 10;
     seed(1225);
-    # Acumula valores dos parâmetros para cada busca, para cada par de pontos.
+    # Acumula valores dos parâmetros dos resultados para cada busca, para cada par de pontos.
     for _ in range(0, n_pontos):
         origem, destino = gera_origem_destino(grafo, n);
         resultado = executa_buscas(grafo, origem, destino);
@@ -51,6 +67,8 @@ def imprimir_media(algoritmo, resultado):
     print(f'Média tempo: {resultado[2]:.6f} segundos');
 
 def comparacao(n, k):
+    # Compara os algoritmos em um par de pontos.
+
     grafo = grafo_knn(n, k);
     seed(1225);
     origem, destino = gera_origem_destino(grafo, n);
@@ -59,10 +77,6 @@ def comparacao(n, k):
     
     for algoritmo, resultado in resultados.items():
         imprimir_resultado(grafo, algoritmo, resultado);
-
-    visualizacao.init((640, 480), "knn");
-    visualizacao.loop(grafo, resultados['Algoritmo de Dijkstra'][0]);
-    visualizacao.quit()
 
 def gera_origem_destino(grafo, n):
     indice_origem = randint(0, n);

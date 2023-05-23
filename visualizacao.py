@@ -102,12 +102,12 @@ def desenha_arestas(screen: pygame.surface, arestas: dict[Vertice, list[Aresta]]
         coordenada_a = (origem.dado[0] * escala + camera_x, origem.dado[1] * escala + camera_y);
         for aresta in arestas:
             coordenada_b = (aresta.destino.dado[0] * escala + camera_x, aresta.destino.dado[1] * escala + camera_y);
-            pygame.draw.line(screen, COR_ARESTA, coordenada_a, coordenada_b, 2);
+            pygame.draw.line(screen, COR_ARESTA, coordenada_a, coordenada_b, 1);
 
 def desenha_caminho(screen, caminho):
     global escala, camera_y, camera_x;
     for i in range(0, len(caminho) - 1):
         coordenada_a = (caminho[i].dado[0] * escala + camera_x, caminho[i].dado[1] * escala + camera_y);
         coordenada_b = (caminho[i + 1].dado[0] * escala + camera_x, caminho[i + 1].dado[1] * escala + camera_y);
-        pygame.draw.line(screen, COR_CAMINHO, coordenada_a, coordenada_b, 2);
+        pygame.draw.line(screen, COR_CAMINHO, coordenada_a, coordenada_b, 1);
 
