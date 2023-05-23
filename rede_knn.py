@@ -2,7 +2,7 @@ from grafo import Vertice, Aresta, Grafo;
 from random import randint, seed;
 from time import time;
 from math import sqrt;
-import heapq
+import heapq;
 
 def gera_vertices(n: int) -> list[Vertice]:
     # Semente para o gerador de valores aleatórios.
