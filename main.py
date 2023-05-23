@@ -1,4 +1,3 @@
-import visualizacao;
 from rede_knn import grafo_knn;
 from busca import bfs, dfs, dijkstra, a_estrela, best_first;
 from random import randint, seed;
